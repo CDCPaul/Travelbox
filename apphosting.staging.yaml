@@ -8,9 +8,9 @@ runConfig:
   concurrency: 50
 
 env:
-  # Firebase 클라이언트 SDK 환경변수
+  # Firebase 클라이언트 SDK 환경변수  
   - variable: NEXT_PUBLIC_FIREBASE_API_KEY
-    value: AIzaSyDsqqxnrCMNG5tXlp2-j6D-ZLWvIP6XSkI
+    value: "AIzaSyDsqqxnrCMNG5tXlp2-j6D-ZLWvIP6XSkI"
     availability:
       - BUILD
       - RUNTIME
