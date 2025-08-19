@@ -63,7 +63,7 @@ try {
     Write-Host "✅ 현재 Firebase 프로젝트: $currentProject" -ForegroundColor Green
 } catch {
     Write-Host "❌ Firebase 프로젝트 설정 오류" -ForegroundColor Red
-    Write-Host "firebase use <project-id> 명령어로 프로젝트를 선택하세요" -ForegroundColor Yellow
+    Write-Host "firebase use [project-id] 명령어로 프로젝트를 선택하세요" -ForegroundColor Yellow
     return
 }
 

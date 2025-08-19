@@ -1,24 +1,23 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { auth } from '@/lib/firebase'
-import { onAuthStateChanged, User } from 'firebase/auth'
 import Link from 'next/link'
+import { useAuth } from '@/lib/hooks/useAuth'
+import { useSession } from '@/lib/hooks/useSession'
+import AdminHeader from '@/components/AdminHeader'
 
 export default function AdminDashboard() {
-  const [user, setUser] = useState<User | null>(null)
-  const [loading, setLoading] = useState(true)
+  const { user, loading: authLoading } = useAuth()
+  const { 
+    sessionInfo, 
+    loading: sessionLoading, 
+    refreshSession, 
+    logout, 
+    isExpiringSoon,
+    minutesLeft 
+  } = useSession()
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user)
-      setLoading(false)
-    })
-
-    return () => unsubscribe()
-  }, [])
-
-  if (loading) {
+  // 로딩 상태 처리
+  if (authLoading || sessionLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-xl">Loading...</div>
@@ -26,6 +25,7 @@ export default function AdminDashboard() {
     )
   }
 
+  // 인증되지 않은 상태
   if (!user) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -33,8 +33,8 @@ export default function AdminDashboard() {
           <h1 className="text-2xl font-bold mb-4">Access Denied</h1>
           <p className="mb-4">You need to be logged in to access the admin dashboard.</p>
           <Link
-            href="/auth/login"
-            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+            href="/auth/login?next=%2Fadmin"
+            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors"
           >
             Login
           </Link>
@@ -45,28 +45,18 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="bg-white shadow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            <div className="flex items-center">
-              <h1 className="text-xl font-semibold text-gray-900">Admin Dashboard</h1>
-            </div>
-            <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-700">Welcome, {user.email}</span>
-              <button
-                onClick={async () => {
-                  await auth.signOut()
-                  try { document.cookie = 'session=; Max-Age=0; path=/; SameSite=Lax' } catch {}
-                  window.location.href = '/'
-                }}
-                className="bg-red-600 text-white px-4 py-2 rounded text-sm hover:bg-red-700"
-              >
-                Logout
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* 헤더 컴포넌트 */}
+      <AdminHeader
+        user={user}
+        sessionInfo={sessionInfo}
+        onRefresh={async () => {
+          const success = await refreshSession()
+          return success
+        }}
+        onLogout={logout}
+        isExpiringSoon={isExpiringSoon}
+        minutesLeft={minutesLeft}
+      />
 
       <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="px-4 py-6 sm:px-0">
