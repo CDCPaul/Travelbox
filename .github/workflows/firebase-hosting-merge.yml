@@ -26,3 +26,7 @@ jobs:
           projectId: travel-box-ph
         env:
           FIREBASE_CLI_EXPERIMENTS: webframeworks
+          FIREBASE_ADMIN_PROJECT_ID: travel-box-ph
+          FIREBASE_ADMIN_CLIENT_EMAIL: firebase-adminsdk-fbsvc@travel-box-ph.iam.gserviceaccount.com
+          FIREBASE_ADMIN_PRIVATE_KEY: ${{ secrets.FIREBASE_ADMIN_PRIVATE_KEY }}
+          NEXT_PUBLIC_FIREBASE_PROJECT_ID: travel-box-ph
