@@ -1,0 +1,77 @@
+# Firebase App Hosting 설정 - 스테이징 환경
+
+runConfig:
+  cpu: 0.5
+  memoryMiB: 256
+  maxInstances: 2
+  minInstances: 0
+  concurrency: 50
+
+env:
+  # Firebase 클라이언트 SDK 환경변수
+  - variable: NEXT_PUBLIC_FIREBASE_API_KEY
+    value: AIzaSyDsqqxnrCMNG5tXlp2-j6D-ZLWvIP6XSkI
+    availability:
+      - BUILD
+      - RUNTIME
+
+  - variable: NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN
+    value: travel-box-ph.firebaseapp.com
+    availability:
+      - BUILD
+      - RUNTIME
+
+  - variable: NEXT_PUBLIC_FIREBASE_PROJECT_ID
+    value: travel-box-ph
+    availability:
+      - BUILD
+      - RUNTIME
+
+  - variable: NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET
+    value: travel-box-ph.firebasestorage.app
+    availability:
+      - BUILD
+      - RUNTIME
+
+  - variable: NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID
+    value: "420908250266"
+    availability:
+      - BUILD
+      - RUNTIME
+
+  - variable: NEXT_PUBLIC_FIREBASE_APP_ID
+    value: "1:420908250266:web:5245326b47a51dcaa35b23"
+    availability:
+      - BUILD
+      - RUNTIME
+
+  # Firebase Admin SDK 환경변수
+  - variable: FIREBASE_ADMIN_PROJECT_ID
+    value: travel-box-ph
+    availability:
+      - RUNTIME
+
+  - variable: FIREBASE_ADMIN_CLIENT_EMAIL
+    value: firebase-adminsdk-fbsvc@travel-box-ph.iam.gserviceaccount.com
+    availability:
+      - RUNTIME
+
+  # 스테이징에서도 실제 private key 사용 (테스트 목적)
+  - variable: FIREBASE_ADMIN_PRIVATE_KEY
+    value: "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQC62lXKq3XjfEFZ\nCPWgKUIzQBZBcIJNJS8oUxrGwLvAfVd3gaYOjijRPyYU8PaOHlHWoRGpiVnWKUfV\nDR3347Qw2EKyTnbe6LUNAIabQ0HJC1YJOn4hg3m8y/3/qsdse/zHQ1yjJrjzVrSp\nUJUIkXYA0moZnkQSLWkG5E51c6luVNH6vo8snXq6okIxOQqE5JP5FmLHaOO6Xr9S\nmp2gK1tInw3a0EBI1jML/iA7CwQGQhMylKbkdHo7wTrmKiQ3ioif6iKZ2yrmXIgE\nykklnELWTztZ5H8+91EfS5qd/qLBABKpEvxJEz2pNCyADwo9w/HxQLY8azxpVIuG\nitIx5ABpAgMBAAECggEABOB29cO033uaPwcnVgdNpYXKLuoPVJEgYnaMz9wu6k67\nLjDRkzatpQx3Y3uIi9wJucbZbanakObh65MckaA9TzsNvpairp23QAAgA0Rlnqgv\nli0TJq/GSSGv3vDnpJK13cOJ0u5LTHqaW4LxaNhXEp1rTIDfePP7dkUWMSWUKf98\nTXDtNN78exsGdZowH8kDFu1YG2lzDfhpMFr5X3QIQHCfaHIBPw1vUgzvnssegk2I\nMczzhA35QZVZfVS1g57oV7xzWbgnC030QjlyK+C8UgPW8th8SSMV1EPu5SzRwA+o\njaRO63ngkOhYmUTt5+ihNhbXiUHI4yZb7G2aQKgCAQKBgQDoZtfIngZpXGNtKEND\noK2YPWgVoeoi0jPXN8F8jvaGkgvYAZih5NlZlqgPtG6lIZVqZdjeBktT+frBni0B\nWrsldoLlO8XaHBRoVQ3CilRdHFZfkZz7UUFst3pi10TrT3zQDh9HqSAXxXQI9x/2\nHUV/H2fgVmB491oAvW89dvxsgQKBgQDN03lskIHDTgGI/Jc69bR+xd4wTD/mVboJ\nSlePmtYjSnYyxSzjmf0+HAX4BX1reghnWMwM9sgyEmQPEVTv7W872nyNyVEkRYe4\nsOcyEqbUU/PGgJmpQFgiA7pLlyzRujAt+0gIK2Rcxg4wA7qYYRGM1BWBZggMRDgx\nUYW9jLG/6QKBgQDQlgWUfSjaBd8DSQDeQOet3Wd/Cvz/VdTLlLJnnlTrwUc6D2yz\n2ZeuzgZ3WgV41qSpg1HbLKENdS83+kUAkzOnUy/2mOhic5NpdPVNpyRDEb0AN8xC\n0NI8xozlC7tCy+wFPLecdNJmI4Waylr4ZZtLlp9//WbHC5LPWTbvXsz+gQKBgDA5\nWxq3pN+YmD17SQeUZ+zH+W4Bf3s9HLBujaNk2MU9/gGZNxJAkxgJQtDAoIkc93kX\nUf+7ll489tqc6fSpAcXZRBOIVo2UCN+Z+yE9Q38+CEC7AsWoAL4/d1ecnPCqmf08\nAb2ARSyDbvGK/h4TqCQB0OQXfs048p2Dhz1JCKB5AoGBANL54/MZVIekjKwq16Sf\nlvXxRGyp74u5mnQoVVXm9SwQHNCsPgZp1w6JyJF2BEQzWXE+QlgMtkNsGTHvsNWQ\nhOgnl2evvnQrqC0ZbCjzVHn7IuZjbZPwSmEgbdPt2ydz8JeNwr9Qkwmp8EiHIFCn\n76iD9qTsx1FuPowBR8wbvVP4\n-----END PRIVATE KEY-----"
+    availability:
+      - RUNTIME
+
+  # 환경 구분
+  - variable: NODE_ENV
+    value: staging
+    availability:
+      - BUILD
+      - RUNTIME
+
+  # 디버그 모드 활성화
+  - variable: NEXT_PUBLIC_DEBUG_MODE
+    value: "true"
+    availability:
+      - BUILD
+      - RUNTIME
