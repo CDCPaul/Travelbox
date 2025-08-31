@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useAuth } from '@/lib/hooks/useAuth'
 import { useSession } from '@/lib/hooks/useSession'
-import AdminHeader from '@/components/AdminHeader'
+import AdminNavbar from '@/components/AdminNavbar'
 
 export default function AdminDashboard() {
   const { user, loading: authLoading } = useAuth()
@@ -15,6 +15,8 @@ export default function AdminDashboard() {
     isExpiringSoon,
     minutesLeft 
   } = useSession()
+
+
 
   // 로딩 상태 처리
   if (authLoading || sessionLoading) {
@@ -45,8 +47,8 @@ export default function AdminDashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* 헤더 컴포넌트 */}
-      <AdminHeader
+      {/* 🧭 관리자 전용 네비게이션 */}
+      <AdminNavbar
         user={user}
         sessionInfo={sessionInfo}
         onRefresh={async () => {

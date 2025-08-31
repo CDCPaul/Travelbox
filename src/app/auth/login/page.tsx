@@ -40,6 +40,8 @@ function LoginInner() {
       })
   }, [router, next])
 
+
+
   const startSessionAndRedirect = async (idToken: string) => {
     console.log('🔍 Calling /api/auth/session...')
     const res = await fetch('/api/auth/session', {

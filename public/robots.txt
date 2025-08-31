@@ -1,0 +1,19 @@
+# Travel Box - SEO Optimized Robots.txt
+
+User-agent: *
+Allow: /
+
+# Block admin and API routes
+Disallow: /admin/
+Disallow: /api/
+Disallow: /auth/
+
+# Allow all languages
+Allow: /ko/
+Allow: /en/
+
+# Sitemap location
+Sitemap: https://travel-box.com/sitemap.xml
+
+# Crawl-delay for better server performance
+Crawl-delay: 1

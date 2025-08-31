@@ -40,3 +40,13 @@ export interface SessionManagerEvents {
 }
 
 export type SessionStatus = 'loading' | 'authenticated' | 'unauthenticated' | 'error'
+
+// Admin 사용자 정의 (auth-context.tsx에서 사용)
+export interface User {
+  id: string
+  email: string
+  displayName: string
+  role: string
+  createdAt: Date
+  updatedAt: Date
+}

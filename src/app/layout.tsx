@@ -1,14 +1,12 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
-import Navbar from '@/components/Navbar'
-import Footer from '@/components/Footer'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Travel Box | Tours, Flights, Cruises',
-  description: 'Discover and book tours, flights, cruises, and more across Korea, Japan, Europe, Middle East, and beyond.',
+  title: 'Travel Box',
+  description: 'Travel Box - Tours, Flights, Cruises',
 }
 
 export default function RootLayout({
@@ -17,11 +15,9 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
+    <html>
       <body className={inter.className}>
-        <Navbar />
         {children}
-        <Footer />
       </body>
     </html>
   )

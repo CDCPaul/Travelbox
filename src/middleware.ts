@@ -1,13 +1,46 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
+const locales = ['ko', 'en']
+const defaultLocale = 'ko'
+
+// Locale 감지 함수
+function getLocale(request: NextRequest): string {
+  // URL에서 locale 추출
+  const pathname = request.nextUrl.pathname
+  const pathnameHasLocale = locales.some(
+    (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
+  )
+
+  if (pathnameHasLocale) {
+    return pathname.split('/')[1]
+  }
+
+  // Accept-Language 헤더에서 locale 감지
+  const acceptLanguage = request.headers.get('accept-language')
+  if (acceptLanguage) {
+    const preferredLocale = acceptLanguage
+      .split(',')
+      .map(lang => lang.split(';')[0].trim())
+      .find(lang => locales.includes(lang.split('-')[0]))
+    
+    if (preferredLocale) {
+      return preferredLocale.split('-')[0]
+    }
+  }
+
+  return defaultLocale
+}
+
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
   
-  if (pathname.startsWith('/auth') || pathname.startsWith('/_next') || pathname.startsWith('/api') || pathname.includes('.')) {
+  // Static 파일, API, Next.js 내부 파일들은 건너뛰기
+  if (pathname.startsWith('/_next') || pathname.startsWith('/api') || pathname.includes('.')) {
     return NextResponse.next()
   }
 
+  // 🔴 Admin 페이지 인증 체크
   if (pathname.startsWith('/admin')) {
     // Next.js 쿠키 파서와 원시 헤더 모두 확인
     const sessionCookie = request.cookies.get('__session')?.value
@@ -38,60 +71,56 @@ export function middleware(request: NextRequest) {
     }
     
     // Basic JWT validation (check if it's a valid JWT structure)
-    try {
-      const parts = finalSessionCookie.split('.')
-      if (parts.length !== 3) {
-        throw new Error('Invalid JWT structure')
-      }
-      
-      response.headers.set('x-debug-jwt-parts', String(parts.length))
-      
-      // Base64URL decode function
-      const base64UrlDecode = (str: string) => {
-        // Convert Base64URL to Base64
-        const base64 = str.replace(/-/g, '+').replace(/_/g, '/')
-        // Add padding if needed
-        const padded = base64 + '='.repeat((4 - base64.length % 4) % 4)
-        return atob(padded)
-      }
-      
-      // Decode payload to check expiration
-      const payload = JSON.parse(base64UrlDecode(parts[1]))
-      const now = Math.floor(Date.now() / 1000)
-      
-      response.headers.set('x-debug-token-valid', 'true')
-      response.headers.set('x-debug-token-exp', String(payload.exp))
-      response.headers.set('x-debug-now', String(now))
-      response.headers.set('x-debug-user', payload.email || 'unknown')
-      
-      if (payload.exp && payload.exp < now) {
-        const url = request.nextUrl.clone()
-        url.pathname = '/auth/login'
-        url.searchParams.set('next', pathname)
-        const redirectResponse = NextResponse.redirect(url)
-        redirectResponse.headers.set('x-debug-reason', 'token-expired')
-        redirectResponse.headers.set('x-debug-token-exp', String(payload.exp))
-        redirectResponse.headers.set('x-debug-now', String(now))
-        return redirectResponse
-      }
-      
-      response.headers.set('x-debug-status', 'success')
-      return response
-      
-    } catch (e) {
+    if (!finalSessionCookie.includes('.')) {
       const url = request.nextUrl.clone()
       url.pathname = '/auth/login'
       url.searchParams.set('next', pathname)
       const redirectResponse = NextResponse.redirect(url)
-      redirectResponse.headers.set('x-debug-reason', 'token-invalid')
-      redirectResponse.headers.set('x-debug-error', String(e))
+      redirectResponse.headers.set('x-debug-reason', 'invalid-jwt-structure')
       return redirectResponse
     }
+    
+    // Pass through with debug headers
+    return response
+  }
+
+  // 🔴 Auth 페이지는 다국어 처리 안함
+  if (pathname.startsWith('/auth')) {
+    return NextResponse.next()
+  }
+
+  // 🟢 Public 페이지 - 다국어 처리
+  const pathnameHasLocale = locales.some(
+    (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
+  )
+
+  if (!pathnameHasLocale) {
+    // locale이 없으면 리디렉션
+    const locale = getLocale(request)
+    const url = request.nextUrl.clone()
+    
+    // 루트 경로면 locale만 추가
+    if (pathname === '/') {
+      url.pathname = `/${locale}`
+    } else {
+      url.pathname = `/${locale}${pathname}`
+    }
+    
+    return NextResponse.redirect(url)
   }
 
   return NextResponse.next()
 }
 
 export const config = {
-  matcher: ['/admin/:path*']
+  matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - api (API routes)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     */
+    '/((?!api|_next/static|_next/image|favicon.ico).*)',
+  ],
 }
